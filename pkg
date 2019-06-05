@@ -105,8 +105,8 @@ end
 program, tr = config {
 	programs {
 		eopkg = {
-			search = "eopkg search -N",
-			search_installed = "eopkg search -N -i",
+			search = "eopkg search --no-color",
+			search_installed = "eopkg search --no-color --installdb",
 			info = "eopkg info",
 			install = "eopkg install",
 			remove = "eopkg remove",
