@@ -20,8 +20,11 @@ function detect_system(config_data)
 end
 
 function search_with(command_string)
+	local fzf = "fzf -m --height=50% --layout=reverse"
+
 	return function(package_name)
-		local full_command = table.concat({command_string, package_name, "| fzf -m"}, " ")
+		local full_command =
+			table.concat({command_string, package_name, "|", fzf}, " ")
 		local result = execute(full_command)
 
 		local packages = {}
@@ -82,7 +85,8 @@ function programs(data)
 end
 
 function detect_locale()
-	return "pt_BR" -- TODO
+	local lang = os.getenv("LANG")
+	return lang:match("[^.]+")
 end
 
 function translations(data)
