@@ -1,0 +1,143 @@
+#!/usr/bin/env lua
+
+function execute(command)
+	local pipe = assert(io.popen(command))
+	local result = assert(pipe:read("*a"))
+	pipe:close()
+	return result
+end
+
+function detect_system(config_data)
+	for program in pairs(config_data) do
+		local result = execute("which " .. program)
+
+		if result and #result > 0 then
+			return config_data[program]
+		end
+	end
+
+	return nil
+end
+
+function search_with(command_string)
+	return function(package_name)
+		local full_command = table.concat({command_string, package_name, "| fzf -m"}, " ")
+		local result = execute(full_command)
+
+		local packages = {}
+
+		for line in result:gmatch("[^\n]+") do
+			packages[#packages+1] = line:match("[^ ]+")
+		end
+
+		print(tr("SelectedPackages", table.concat(packages, ", ")))
+		print("")
+		return packages
+	end
+end
+
+function programs(data)
+	local commands = detect_system(data)
+	if not commands then return end
+
+	local search = search_with(commands.search)
+	local search_installed = search_with(commands.search_installed)
+
+	return {
+		["install"] = function(name)
+			local packages = search(name)
+			os.execute(commands.install .. " " .. table.concat(packages, " "))
+		end,
+
+		["info"] = function(name)
+			local packages = search(name)
+
+			for _, package in ipairs(packages) do
+				local heading = tr("InfoHeading", package)
+				print(heading)
+				print(string.rep("-", #heading))
+				print("")
+				assert(os.execute(commands.info .. " " .. package))
+				print("")
+			end
+		end,
+
+		["remove"] = function(name)
+			local packages = search_installed(name)
+			os.execute(commands.remove .. " " .. table.concat(packages, " "))
+		end,
+
+		["remove-unnused"] = function()
+			os.execute(commands.remove_unnused)
+		end,
+
+		["update"] = function()
+			os.execute(commands.update)
+		end,
+
+		["clear-cache"]  = function()
+			os.execute(commands.clear_cache)
+		end
+	}
+end
+
+function detect_locale()
+	return "pt_BR" -- TODO
+end
+
+function translations(data)
+	local locale = detect_locale()
+	local translation_table = data[locale] or data["en_US"]
+
+	return function(code, ...)
+		return string.format(translation_table[code], ...)
+	end
+end
+
+function config(data)
+	return data[1], data[2]
+end
+
+program, tr = config {
+	programs {
+		eopkg = {
+			search = "eopkg search -N",
+			search_installed = "eopkg search -N -i",
+			info = "eopkg info",
+			install = "eopkg install",
+			remove = "eopkg remove",
+			remove_unnused = "eopkg remove-orphans",
+			clear_cache = "eopkg delete-cache",
+			update = "eopkg upgrade"
+		}
+	},
+
+	translations {
+		pt_BR = {
+			SelectedPackages = "Pacotes selecionados: %s.",
+			InfoHeading = "Pacote %s",
+			Unsupported = "Este programa não funciona em seu sistema.",
+			UnknownSubcommand = "Subcomando “%s” não reconhecido."
+		},
+		en_US = {
+			SelectedPackages = "Selected packages: %s.",
+			InfoHeading = "Package %s",
+			Unsupported = "This program doesn't work on your system.",
+			UnknownSubcommand = "Unknown subcommand “%s”."
+		}
+	}
+}
+
+if not program then
+	print(tr "Unsupported")
+	os.exit(1)
+end
+
+local subcommand = arg[1]
+
+if not program[subcommand] then
+	print(tr("UnknownSubcommand", subcommand))
+	os.exit(2)
+end
+
+program[subcommand](arg[2])
