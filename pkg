@@ -70,8 +70,8 @@ function programs(data)
 			os.execute(commands.remove .. " " .. table.concat(packages, " "))
 		end,
 
-		["remove-unnused"] = function()
-			os.execute(commands.remove_unnused)
+		["autoremove"] = function()
+			os.execute(commands.autoremove)
 		end,
 
 		["update"] = function()
@@ -110,7 +110,7 @@ program, tr = config {
 			info = "eopkg info",
 			install = "eopkg install",
 			remove = "eopkg remove",
-			remove_unnused = "eopkg remove-orphans",
+			autoremove = "eopkg remove-orphans",
 			clear_cache = "eopkg delete-cache",
 			update = "eopkg upgrade"
 		}

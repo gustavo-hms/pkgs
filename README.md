@@ -26,7 +26,7 @@ where `<command>` can be any of:
 - `info`
 - `install`
 - `remove`
-- `remove-unnused`
+- `autoremove`
 - `update`
 - `clear-cache`
 
@@ -48,12 +48,12 @@ The command `pkg remove` uninstalls the selected packages. It works like `pkg in
 pkg remove [search term]
 ```
 
-## pkg remove-unnused
+## pkg autoremove
 
-The command `pkg remove-unnused` uninstalls packages that were installed automatically as dependencies of other packages but are not needed anymore (normally because the original packages that trigger the installation were removed). It doesn't need an interactive step or a search term.
+The command `pkg autoremove` uninstalls packages that were installed automatically as dependencies of other packages but are not needed anymore (normally because the original packages that trigger the installation were removed). It doesn't need an interactive step or a search term.
 
 ```sh
-pkg remove-unnused
+pkg autoremove
 ```
 
 ## pkg update
