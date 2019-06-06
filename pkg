@@ -71,7 +71,15 @@ function programs(data)
 		end,
 
 		["autoremove"] = function()
-			os.execute(commands.autoremove)
+			if type(commands.autoremove) == "table" then
+				local result = execute(commands.autoremove[1])
+
+				if result and #result > 0 then
+					os.execute(commands.autoremove[2] .. " " .. result)
+				end
+			else
+				os.execute(commands.autoremove)
+			end
 		end,
 
 		["update"] = function()
@@ -113,6 +121,16 @@ program, tr = config {
 			autoremove = "eopkg remove-orphans",
 			clear_cache = "eopkg delete-cache",
 			update = "eopkg upgrade"
+		},
+		pacman = {
+			search = "pacman -Ss",
+			search_installed = "pacman -Qs",
+			info = "pacman -Si",
+			install = "pacman -S",
+			remove = "pacman -Rs",
+			autoremove = {"pacman -Qtdq", "pacman -Rns"},
+			clear_cache = "", -- TODO
+			update = "pacman -Suy"
 		}
 	},
 
