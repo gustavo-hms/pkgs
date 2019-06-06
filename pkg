@@ -70,24 +70,20 @@ function programs(data)
 			os.execute(commands.remove .. " " .. table.concat(packages, " "))
 		end,
 
-		["autoremove"] = function()
-			if type(commands.autoremove) == "table" then
-				local result = execute(commands.autoremove[1])
+		["no-orphans"] = function()
+			if type(commands.no_orphans) == "table" then
+				local result = execute(commands.no_orphans[1])
 
 				if result and #result > 0 then
-					os.execute(commands.autoremove[2] .. " " .. result)
+					os.execute(commands.no_orphans[2] .. " " .. result)
 				end
 			else
-				os.execute(commands.autoremove)
+				os.execute(commands.no_orphans)
 			end
 		end,
 
 		["update"] = function()
 			os.execute(commands.update)
-		end,
-
-		["clear-cache"]  = function()
-			os.execute(commands.clear_cache)
 		end
 	}
 end
@@ -118,8 +114,7 @@ program, tr = config {
 			info = "eopkg info",
 			install = "eopkg install",
 			remove = "eopkg remove",
-			autoremove = "eopkg remove-orphans",
-			clear_cache = "eopkg delete-cache",
+			no_orphans = "eopkg remove-orphans",
 			update = "eopkg upgrade"
 		},
 		pacman = {
@@ -128,8 +123,7 @@ program, tr = config {
 			info = "pacman -Si",
 			install = "pacman -S",
 			remove = "pacman -Rs",
-			autoremove = {"pacman -Qtdq", "pacman -Rns"},
-			clear_cache = "", -- TODO
+			no_orphans = {"pacman -Qtdq", "pacman -Rns"},
 			update = "pacman -Suy"
 		}
 	},
