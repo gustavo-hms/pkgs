@@ -44,7 +44,7 @@ function search_with(search_command, info_command)
 		local packages = {}
 
 		for line in result:gmatch("[^\n]+") do
-			packages[#packages+1] = line:match("[^ ]+")
+			packages[#packages+1] = line:match("[^ \\t]+")
 		end
 
 		print(tr("SelectedPackages", table.concat(packages, ", ")))
