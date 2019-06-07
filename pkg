@@ -19,12 +19,21 @@ function detect_system(config_data)
 	return nil
 end
 
-function search_with(command_string)
-	local fzf = "fzf -m --height=50% --layout=reverse"
+function search_with(search_command, info_command)
+	-- fzf configuration. The preview window (showing detailed information
+	-- about a package) can be toggled with Ctrl+i
+	local fzf = string.format([[
+		fzf --multi \
+			--height=90%% \
+			--layout=reverse \
+			--bind=ctrl-i:toggle-preview \
+			--preview-window=bottom:50%% \
+			--preview='%s {+1}'
+	]], info_command)
 
 	return function(package_name)
 		local full_command =
-			table.concat({command_string, package_name, "|", fzf}, " ")
+			table.concat({search_command, package_name, "|", fzf}, " ")
 		local result = execute(full_command)
 
 		local packages = {}
@@ -43,8 +52,8 @@ function programs(data)
 	local commands = detect_system(data)
 	if not commands then return end
 
-	local search = search_with(commands.search)
-	local search_installed = search_with(commands.search_installed)
+	local search = search_with(commands.search, commands.info)
+	local search_installed = search_with(commands.search_installed, commands.info)
 
 	return {
 		["install"] = function(name)
