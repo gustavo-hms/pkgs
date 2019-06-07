@@ -24,6 +24,7 @@ function search_with(search_command, info_command)
 	-- about a package) can be toggled with Ctrl+i
 	local fzf = string.format([[
 		fzf --multi \
+			--ansi \
 			--height=90%% \
 			--layout=reverse \
 			--bind=ctrl-i:toggle-preview \
@@ -127,8 +128,8 @@ end
 program, tr = config {
 	programs {
 		eopkg = {
-			search = "eopkg search --no-color",
-			search_installed = "eopkg search --no-color --installdb",
+			search = "eopkg search",
+			search_installed = "eopkg search --installdb",
 			info = "eopkg info",
 			install = "eopkg install",
 			remove = "eopkg remove",
