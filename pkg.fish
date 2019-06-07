@@ -1,2 +1,2 @@
-complete -c pkg -a 'info install remove autoremove update clear-cache'
+complete -c pkg -a 'info install remove no-orphans update clear-cache'
 
