@@ -23,26 +23,26 @@ pkg <command> [search term]
 
 where `<command>` can be any of:
 
-- `info`
+- `details`
 - `install`
 - `remove`
 - `autoremove`
 - `update`
 - `clear-cache`
 
-## pkg info
+## pkg details
 
-The command `pkg info` is used to retrieve information about packages. It is called this way:
+The command `pkg details` is used to retrieve detailed information about packages. It is called this way:
 
 ```sh
-pkg info [search term]
+pkg details [search term]
 ```
 
 It uses `fzf` to filter the results like `pkg install`.
 
 ## pkg remove
 
-The command `pkg remove` uninstalls the selected packages. It works like `pkg install` and `pkg info`:
+The command `pkg remove` uninstalls the selected packages. It works like `pkg install` and `pkg details`:
 
 ```sh
 pkg remove [search term]

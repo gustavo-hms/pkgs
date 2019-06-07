@@ -57,8 +57,8 @@ function programs(data)
 	local commands = detect_system(data)
 	if not commands then return end
 
-	local search = search_with(commands.search, commands.info)
-	local search_installed = search_with(commands.search_installed, commands.info)
+	local search = search_with(commands.search, commands.details)
+	local search_installed = search_with(commands.search_installed, commands.details)
 
 	return {
 		["install"] = function(name)
@@ -68,7 +68,7 @@ function programs(data)
 			os.execute(commands.install .. " " .. table.concat(packages, " "))
 		end,
 
-		["info"] = function(name)
+		["details"] = function(name)
 			local packages = search(name)
 			if not packages then return end
 
@@ -77,7 +77,7 @@ function programs(data)
 				print(heading)
 				print(string.rep("-", #heading))
 				print("")
-				assert(os.execute(commands.info .. " " .. package))
+				assert(os.execute(commands.details .. " " .. package))
 				print("")
 			end
 		end,
@@ -130,7 +130,7 @@ program, tr = config {
 		eopkg = {
 			search = "eopkg search",
 			search_installed = "eopkg search --installdb",
-			info = "eopkg info",
+			details = "eopkg info",
 			install = "eopkg install",
 			remove = "eopkg remove",
 			no_orphans = "eopkg remove-orphans",
@@ -139,7 +139,7 @@ program, tr = config {
 		pacman = {
 			search = "pacman -Ss",
 			search_installed = "pacman -Qs",
-			info = "pacman -Si",
+			details = "pacman -Si",
 			install = "pacman -S",
 			remove = "pacman -Rs",
 			no_orphans = {"pacman -Qtdq", "pacman -Rns"},
