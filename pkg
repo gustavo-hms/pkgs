@@ -136,6 +136,15 @@ program, tr = config {
 			no_orphans = "eopkg remove-orphans",
 			update = "eopkg upgrade"
 		},
+		apt = {
+			search = "apt-cache search",
+			search_installed = "dpkg --show --showformat='${Package} ${binary:Sumary}\\n' | grep",
+			details = "apt-cache showpkg",
+			install = "apt-get install",
+			remove = "apt-get remove",
+			no_orphans = "apt-get autoremove",
+			update = "apt-get update; apt-get upgrade"
+		},
 		pacman = {
 			search = "pacman -Ss",
 			search_installed = "pacman -Qs",
