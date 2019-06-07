@@ -36,6 +36,10 @@ function search_with(search_command, info_command)
 			table.concat({search_command, package_name, "|", fzf}, " ")
 		local result = execute(full_command)
 
+		if not result or #result == 0 then
+			return nil
+		end
+
 		local packages = {}
 
 		for line in result:gmatch("[^\n]+") do
@@ -58,11 +62,14 @@ function programs(data)
 	return {
 		["install"] = function(name)
 			local packages = search(name)
+			if not packages then return end
+
 			os.execute(commands.install .. " " .. table.concat(packages, " "))
 		end,
 
 		["info"] = function(name)
 			local packages = search(name)
+			if not packages then return end
 
 			for _, package in ipairs(packages) do
 				local heading = tr("InfoHeading", package)
@@ -76,6 +83,8 @@ function programs(data)
 
 		["remove"] = function(name)
 			local packages = search_installed(name)
+			if not packages then return end
+
 			os.execute(commands.remove .. " " .. table.concat(packages, " "))
 		end,
 
