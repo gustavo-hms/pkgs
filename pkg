@@ -128,13 +128,21 @@ end
 
 program, tr = config {
 	programs {
+		-- Use long-named flags whenever possible to improve readability
 		eopkg = {
+			-- Search for packages not installed in your system
 			search = "eopkg search",
+			-- Search for packages already installed in your system
 			search_installed = "eopkg search --installdb",
+			-- Get detailed information about packages
 			details = "eopkg info",
+			-- Install a package
 			install = "eopkg install",
+			-- Remove a package
 			remove = "eopkg remove",
+			-- Remove orphans
 			no_orphans = "eopkg remove-orphans",
+			-- Update the installed packages
 			update = "eopkg upgrade"
 		},
 		apt = {
@@ -159,31 +167,39 @@ program, tr = config {
 
 	translations {
 		pt_BR = {
-			SelectedPackages = "Pacotes selecionados: %s.",
+			SelectedPackages = "Pacotes escolhidos: %s.",
 			InfoHeading = "Pacote %s",
 			Unsupported = "Este programa não funciona em seu sistema.",
-			UnknownSubcommand = "Subcomando “%s” não reconhecido.",
-			Shortcuts = "<Tab>: multisseleção. <Ctrl+D>: ocultar detalhes. <Esc>: sair."
+			UnknownSubcommand = "Subcomando “%s” não reconhecido. Opções disponíveis:\n  - %s",
+			Shortcuts = "<Tab>: escolher | <Enter>: confirmar | <Ctrl+D>: detalhes | <Esc>: sair"
 		},
 		en_US = {
 			SelectedPackages = "Selected packages: %s.",
 			InfoHeading = "Package %s",
 			Unsupported = "This program doesn't work on your system.",
-			UnknownSubcommand = "Unknown subcommand “%s”.",
-			Shortcuts = "<Tab>: multiselection. <Ctrl+D>: hide details. <Esc>: quit."
+			UnknownSubcommand = "Unknown subcommand “%s”. Available options:\n  - %s",
+			Shortcuts = "<Tab>: select | <Enter>: confirm | <Ctrl+D>: details | <Esc>: quit"
 		}
 	}
 }
 
 if not program then
-	print(tr "Unsupported")
+	print(tr"Unsupported")
 	os.exit(1)
 end
 
 local subcommand = arg[1]
 
 if not program[subcommand] then
-	print(tr("UnknownSubcommand", subcommand))
+	local keys = function(t)
+		local keys = {}
+		for k in pairs(t) do
+			keys[#keys + 1] = k
+		end
+		return keys
+	end
+
+	print(tr("UnknownSubcommand", subcommand, table.concat(keys(program), "\n  - ")))
 	os.exit(2)
 end
 
