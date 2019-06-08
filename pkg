@@ -20,19 +20,20 @@ function detect_system(config_data)
 end
 
 function search_with(search_command, info_command)
-	-- fzf configuration. The preview window (showing detailed information
-	-- about a package) can be toggled with Ctrl+D
-	local fzf = string.format([[
-		fzf --multi \
-			--ansi \
-			--height=90%% \
-			--layout=reverse \
-			--bind=ctrl-d:toggle-preview \
-			--preview-window=bottom:50%% \
-			--preview='%s {+1}'
-	]], info_command)
-
 	return function(package_name)
+		-- fzf configuration. The preview window (showing detailed information
+		-- about a package) can be toggled with Ctrl+D
+		local fzf = string.format([[
+			fzf --multi \
+				--ansi \
+				--height=90%% \
+				--layout=reverse \
+				--bind=ctrl-d:toggle-preview \
+				--preview-window=bottom:50%% \
+				--preview='%s {+1}' \
+				--header='%s'
+			]], info_command, tr"Shortcuts" )
+
 		local full_command =
 			table.concat({search_command, package_name, "|", fzf}, " ")
 		local result = execute(full_command)
@@ -161,13 +162,15 @@ program, tr = config {
 			SelectedPackages = "Pacotes selecionados: %s.",
 			InfoHeading = "Pacote %s",
 			Unsupported = "Este programa não funciona em seu sistema.",
-			UnknownSubcommand = "Subcomando “%s” não reconhecido."
+			UnknownSubcommand = "Subcomando “%s” não reconhecido.",
+			Shortcuts = "<Tab>: multisseleção. <Ctrl+D>: ocultar detalhes. <Esc>: sair."
 		},
 		en_US = {
 			SelectedPackages = "Selected packages: %s.",
 			InfoHeading = "Package %s",
 			Unsupported = "This program doesn't work on your system.",
-			UnknownSubcommand = "Unknown subcommand “%s”."
+			UnknownSubcommand = "Unknown subcommand “%s”.",
+			Shortcuts = "<Tab>: multiselection. <Ctrl+D>: hide details. <Esc>: quit."
 		}
 	}
 }
