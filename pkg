@@ -142,7 +142,7 @@ program, tr = config {
 			remove = "eopkg remove",
 			-- Remove orphans
 			no_orphans = "eopkg remove-orphans",
-			-- Update the installed packages
+			-- Search for updates in the installed packages and install them
 			update = "eopkg upgrade"
 		},
 		apt = {
