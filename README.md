@@ -82,15 +82,15 @@ pkg no-orphans
 # What distros are supported?
 
 Currently, the supported distributions are:
-	- Solus;
-	- Archlinux-based distros;
-	- Debian-based distros.
+- Solus;
+- Archlinux-based distros;
+- Debian-based distros.
 
-But it's very easy to add support for other distros. Take a look at the `config` section of the `pkg` script. There you will also find a section for translations if you want to help.
+But it's very easy to add support for other distros, even if you don't know [lua](https://www.lua.org/) (the language used to write the program). Take a look at the `config` section of the `pkg` script.  You will also find a section for translations there if you want to help.
 
 # Installation
 
-By now, there isn't an installation script. But you can simply take the `pkg` file in this repository and place it in your `PATH`.
+By now, there isn't an installation script. But you can simply take the `pkg` file in this repository and place it in your `PATH`. You must have both [lua](https://www.lua.org/) and [fzf](https://github.com/junegunn/fzf) installed in your system.
 
 There's also an autocompletion script for the fish shell. If you want to use it, just place the `pkg.fish` file inside the `~/.config/fish/completions` directory. Since I don't use other shells (why do you? =D), I didn't make autocompletion scripts for them. But contributions are welcome.
 
