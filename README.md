@@ -35,7 +35,7 @@ Then, thanks to the fuzzy finder, you can start typing to filter the list that a
 
 If you want to install more then one package, you can hit `Tab` to select each one, then hit `Enter` to confirm.
 
-![Screenshot](installation.png)
+![Screenshot](https://user.fm/files/v2-e11831b58cfd74792cedcd8c1f02e061/pkg-install.png)
 
 ## pkg install
 
