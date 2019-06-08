@@ -1,60 +1,67 @@
 # pkg
-`pkg` is a very basic wrapper for package managers. It relies on [`fzf`](https://github.com/junegunn/fzf) to provide a simple and easy interface for various package managers in the Linux world.
+`pkg` is a very basic wrapper for package managers. It relies on [fzf](https://github.com/junegunn/fzf) to provide a simple and easy interface for various package managers in the Linux world.
 
 It aims to improve usability in this area of command line interfaces for package management.
 
 # Usage
 
-Suppose you want to install Kdenlive, but don't remember its exact name. You only remember it's a video editing tool from KDE. So you can just type:
+The program `pkg` has five subcommands:
+
+- `install`
+- `remove`
+- `details`
+- `update`
+- `no-orphans`
+
+The usage is:
+
+```sh
+pkg <command> "search term"
+```
+when `<command>` is any of `install`, `remove` or `details`, and:
+
+```sh
+pkg <command>
+```
+when `<command>` is `update` or `no-orphans`.
+
+For the first three subcommands, `pkg` provides a fuzzy finder for packages you want to act upon. You specify an initial term to search, and then you can filter results with the fuzzy finder. For example, suppose you want to install Kdenlive, but don't remember its exact name. You only remember it's a video editing tool from KDE. So you can just type:
 
 ```sh
 sudo pkg install video
 ```
 
-Then, thanks to `fzf`, you can just start typing to filter the list that appears. For example, if you type `kde`, chances are that you can finally find the `kdenlive` package. Then, it's just a matter of hitting `Enter` and the package will be installed.
+Then, thanks to the fuzzy finder, you can start typing to filter the list that appears. For example, if you type `kde`, chances are that you can finally find the `kdenlive` package. Then, it's just a matter of hitting `Enter` and the package will be installed.
 
 If you want to install more then one package, you can hit `Tab` to select each one, then hit `Enter` to confirm.
 
-More generally, you can use `pkg` this way:
+![Screenshot](installation.png)
+
+## pkg install
+
+The command `pkg install` installs the packages you select with the fuzzy finder.
 
 ```sh
-pkg <command> [search term]
+pkg install [initial search term]
 ```
+## pkg remove
 
-where `<command>` can be any of:
+The command `pkg remove` uninstalls the selected packages. It works like `pkg install`:
 
-- `details`
-- `install`
-- `remove`
-- `autoremove`
-- `update`
-- `clear-cache`
+```sh
+pkg remove [initial search term]
+```
 
 ## pkg details
 
-The command `pkg details` is used to retrieve detailed information about packages. It is called this way:
+The command `pkg details` is used to retrieve detailed information about packages. It works like `pkg install`:
 
 ```sh
-pkg details [search term]
+pkg details [initial search term]
 ```
 
 It uses `fzf` to filter the results like `pkg install`.
 
-## pkg remove
-
-The command `pkg remove` uninstalls the selected packages. It works like `pkg install` and `pkg details`:
-
-```sh
-pkg remove [search term]
-```
-
-## pkg autoremove
-
-The command `pkg autoremove` uninstalls packages that were installed automatically as dependencies of other packages but are not needed anymore (normally because the original packages that trigger the installation were removed). It doesn't need an interactive step or a search term.
-
-```sh
-pkg autoremove
-```
 
 ## pkg update
 
@@ -64,13 +71,28 @@ The command `pkg update` updates all installed packages that have new versions i
 pkg update
 ```
 
-## pkg clear-cache
+## pkg no-orphans
 
-The command `pkg clear-cache` deletes the cache of downloaded packages, freeing space in the disk. Again, like the previous two commands, no interactive step nor search term are needed.
+The command `pkg no-orphans` uninstalls packages that were installed automatically as dependencies of other packages but are not needed anymore (normally because the original packages that trigger the installation were removed). It doesn't need an interactive step or a search term.
 
 ```sh
-pkg clear-cache
+pkg no-orphans
 ```
+
+# What distros are supported?
+
+Currently, the supported distributions are:
+	- Solus;
+	- Archlinux-based distros;
+	- Debian-based distros.
+
+But it's very easy to add support for other distros. Take a look at the `config` section of the `pkg` script. There you will also find a section for translations if you want to help.
+
+# Installation
+
+By now, there isn't an installation script. But you can simply take the `pkg` file in this repository and place it in your `PATH`.
+
+There's also an autocompletion script for the fish shell. If you want to use it, just place the `pkg.fish` file inside the `~/.config/fish/completions` directory. Since I don't use other shells (why do you? =D), I didn't make autocompletion scripts for them. But contributions are welcome.
 
 # Why?
 
@@ -84,13 +106,15 @@ The first usability bug I see is that you need to somehow know the exact name of
 
 This problem is even worse with Debian based distributions, since the program used to query the database (`apt-cache`) is different from the program used to install packages (`apt-get`). And it doesn't stop here: the names chosen for these programs are a usability bug by themselves. Think for a moment in the steps you take in a normal installation:
 
-- you need to query the database, so you start typing the first letters of the name of the first program (`apt-cache`), then hit `Tab` to let the shell autocompletes it for you. At this time, you have a break of expectations, realising the autocompletion got stuck at the `apt-` portion of the name since, well, the are two programs with the same prefix (and the two are used to manage packages).
+- you need to query the database, so you start typing the first letters of the name of the first program (`apt-cache`), then hit `Tab` to let the shell autocompletes it for you. At this time, you have a break of expectations, realising the autocompletion got stuck at the `apt-` portion of the name since, well, the are two programs with the same prefix;
 
 - the second step is, then, the disambiguation: you tell the shell the program you really want is `apt-cache`;
 
 - the next step is the real query;
 
 - now, once you have found the package name, you proceed with the installation, typing the first letters of the name of the second program (`apt-get`) and hitting `Tab` to let the autocompletion does its magic. Then, once again, you get stuck at the same annoying `apt-` portion of the name, requiring an extra step of disambiguation.
+
+The `apt` program tries to solve at least this problem, offering a common abstraction for the underlying two programs, but it seems it still is a work in progress.
 
 ## Updating packages is a two step operation
 
@@ -116,15 +140,16 @@ Well, well, `pacman`... What can I say about you? It's a great example of how no
 
 ```sh
 pacman -Suy
-pacman -Qdt
-pacman -Rs something
-pacman -Ssq something
+pacman -Qtdq
+pacman -Rns something
+pacman -S something
+pacman -Si something
+pacman -Ss something
 pacman -Qs something
-pacman -Qii something
 ```
 
 I think you got it.
 
 Being counterintuitive means not only it's hard to *learn*, but also hard to *memorise*. And, being hard to *memorise* means I have to *learn* again and again commands I don't use frequently.
 
-There's another related problem with this design: it doesn't play well with autosugestions, making discoverability even harder. Even if the shell completes options like `-Ssq` for the user, what's the meaning of this? How can the user be helped in the process of learning to use the program? Learn as you play isn't an option at all.
+There's another related problem with this design: it doesn't play well with autosugestions, making discoverability even harder. Even if the shell completes options like `-Ssq` for the user, what's the meaning of this option? How can the user be helped in the process of learning to use the program? Learn as you play isn't an option at all.
