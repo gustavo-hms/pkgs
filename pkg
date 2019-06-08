@@ -21,13 +21,13 @@ end
 
 function search_with(search_command, info_command)
 	-- fzf configuration. The preview window (showing detailed information
-	-- about a package) can be toggled with Ctrl+i
+	-- about a package) can be toggled with Ctrl+D
 	local fzf = string.format([[
 		fzf --multi \
 			--ansi \
 			--height=90%% \
 			--layout=reverse \
-			--bind=ctrl-i:toggle-preview \
+			--bind=ctrl-d:toggle-preview \
 			--preview-window=bottom:50%% \
 			--preview='%s {+1}'
 	]], info_command)
@@ -151,7 +151,7 @@ program, tr = config {
 			details = "pacman -Si",
 			install = "pacman -S",
 			remove = "pacman -Rs",
-			no_orphans = {"pacman -Qtdq", "pacman -Rns"},
+			no_orphans = {"pacman -Qtdq", "pacman -Rns"}, -- Pipe the first in the second
 			update = "pacman -Suy"
 		}
 	},
