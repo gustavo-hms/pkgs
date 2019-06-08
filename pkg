@@ -9,9 +9,9 @@ end
 
 function detect_system(config_data)
 	for program in pairs(config_data) do
-		local result = execute("which " .. program)
+		local exists = os.execute(string.format("command -v %s > /dev/null", program))
 
-		if result and #result > 0 then
+		if exists then
 			return config_data[program]
 		end
 	end
