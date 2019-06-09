@@ -54,6 +54,12 @@ function search_with(search_command, info_command)
 	end
 end
 
+function quit_with_search_term_not_provided(subcommand)
+	local program_name = arg[0]:match("[^/]+$")
+	print(tr("SearchTermNotProvided", program_name, subcommand))
+	os.exit(3)
+end
+
 function programs(data)
 	local commands = detect_system(data)
 	if not commands then return end
@@ -63,6 +69,10 @@ function programs(data)
 
 	return {
 		["install"] = function(name)
+			if not name then
+				quit_with_search_term_not_provided("install")
+			end
+
 			local packages = search(name)
 			if not packages then return end
 
@@ -70,6 +80,10 @@ function programs(data)
 		end,
 
 		["details"] = function(name)
+			if not name then
+				quit_with_search_term_not_provided("details")
+			end
+
 			local packages = search(name)
 			if not packages then return end
 
@@ -84,6 +98,10 @@ function programs(data)
 		end,
 
 		["remove"] = function(name)
+			if not name then
+				quit_with_search_term_not_provided("remove")
+			end
+
 			local packages = search_installed(name)
 			if not packages then return end
 
@@ -168,6 +186,7 @@ program, tr = config {
 	translations {
 		pt_BR = {
 			SelectedPackages = "Pacotes escolhidos: %s.",
+			SearchTermNotProvided = "Você deve fornecer um termo inicial de busca:\n\n\t%s %s “termo de busca”\n",
 			InfoHeading = "Pacote %s",
 			Unsupported = "Este programa não funciona em seu sistema.",
 			UnknownSubcommand = "Subcomando “%s” não reconhecido. Opções disponíveis:\n  - %s",
@@ -175,6 +194,7 @@ program, tr = config {
 		},
 		en_US = {
 			SelectedPackages = "Selected packages: %s.",
+			SearchTermNotProvided = "You must provide an initial search term:\n\n\t%s %s “search term”\n",
 			InfoHeading = "Package %s",
 			Unsupported = "This program doesn't work on your system.",
 			UnknownSubcommand = "Unknown subcommand “%s”. Available options:\n  - %s",
