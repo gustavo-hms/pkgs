@@ -1,6 +1,18 @@
 #!/usr/bin/env lua
 
+local errors = {
+	unsupported_system = 1,
+	usage = 2,
+	commands = 3
+}
+
 function execute(command)
+	if not os.execute(command) then
+		os.exit(errors.commands)
+	end
+end
+
+function execute_and_read(command)
 	local pipe = assert(io.popen(command))
 	local result = assert(pipe:read("*a"))
 	pipe:close()
@@ -36,7 +48,7 @@ function search_with(search_command, info_command)
 
 		local full_command =
 			table.concat({search_command, package_name, "|", fzf}, " ")
-		local result = execute(full_command)
+		local result = execute_and_read(full_command)
 
 		if not result or #result == 0 then
 			return nil
@@ -57,7 +69,7 @@ end
 function quit_with_search_term_not_provided(subcommand)
 	local program_name = arg[0]:match("[^/]+$")
 	io.stderr:write(tr("SearchTermNotProvided", program_name, subcommand))
-	os.exit(3)
+	os.exit(errors.usage)
 end
 
 function programs(data)
@@ -76,7 +88,7 @@ function programs(data)
 			local packages = search(name)
 			if not packages then return end
 
-			os.execute(commands.install .. " " .. table.concat(packages, " "))
+			execute(commands.install .. " " .. table.concat(packages, " "))
 		end,
 
 		["details"] = function(name)
@@ -92,7 +104,7 @@ function programs(data)
 				print(heading)
 				print(string.rep("-", #heading))
 				print("")
-				assert(os.execute(commands.details .. " " .. package))
+				execute(commands.details .. " " .. package)
 				print("")
 			end
 		end,
@@ -105,23 +117,23 @@ function programs(data)
 			local packages = search_installed(name)
 			if not packages then return end
 
-			os.execute(commands.remove .. " " .. table.concat(packages, " "))
+			execute(commands.remove .. " " .. table.concat(packages, " "))
 		end,
 
 		["no-orphans"] = function()
 			if type(commands.no_orphans) == "table" then
-				local result = execute(commands.no_orphans[1])
+				local result = execute_and_read(commands.no_orphans[1])
 
 				if result and #result > 0 then
-					os.execute(commands.no_orphans[2] .. " " .. result)
+					execute(commands.no_orphans[2] .. " " .. result)
 				end
 			else
-				os.execute(commands.no_orphans)
+				execute(commands.no_orphans)
 			end
 		end,
 
 		["update"] = function()
-			os.execute(commands.update)
+			execute(commands.update)
 		end
 	}
 end
@@ -205,7 +217,7 @@ program, tr = config {
 
 if not program then
 	io.stderr:write(tr"Unsupported")
-	os.exit(1)
+	os.exit(errors.unsupported_system)
 end
 
 local subcommand = arg[1]
@@ -220,7 +232,7 @@ if not program[subcommand] then
 	end
 
 	io.stderr:write(tr("UnknownSubcommand", subcommand, table.concat(keys(program), "\n  - ")))
-	os.exit(2)
+	os.exit(errors.usage)
 end
 
 program[subcommand](arg[2])
