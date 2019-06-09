@@ -6,7 +6,9 @@ local errors = {
 	commands = 3
 }
 
-function execute(command)
+function execute(...)
+	local command = table.concat({...}, " ")
+
 	if not os.execute(command) then
 		os.exit(errors.commands)
 	end
@@ -47,7 +49,7 @@ function search_with(search_command, info_command)
 			]], info_command, tr"Shortcuts" )
 
 		local full_command =
-			table.concat({search_command, package_name, "|", fzf}, " ")
+			table.concat({ search_command, package_name, "|", fzf }, " ")
 		local result = execute_and_read(full_command)
 
 		if not result or #result == 0 then
@@ -88,7 +90,7 @@ function programs(data)
 			local packages = search(name)
 			if not packages then return end
 
-			execute(commands.install .. " " .. table.concat(packages, " "))
+			execute(commands.install, unpack(packages))
 		end,
 
 		["details"] = function(name)
@@ -104,7 +106,7 @@ function programs(data)
 				print(heading)
 				print(string.rep("-", #heading))
 				print("")
-				execute(commands.details .. " " .. package)
+				execute(commands.details, package)
 				print("")
 			end
 		end,
@@ -117,7 +119,7 @@ function programs(data)
 			local packages = search_installed(name)
 			if not packages then return end
 
-			execute(commands.remove .. " " .. table.concat(packages, " "))
+			execute(commands.remove, unpack(packages))
 		end,
 
 		["no-orphans"] = function()
@@ -125,7 +127,7 @@ function programs(data)
 				local result = execute_and_read(commands.no_orphans[1])
 
 				if result and #result > 0 then
-					execute(commands.no_orphans[2] .. " " .. result)
+					execute(commands.no_orphans[2], result)
 				end
 			else
 				execute(commands.no_orphans)
