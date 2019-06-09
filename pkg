@@ -56,7 +56,7 @@ end
 
 function quit_with_search_term_not_provided(subcommand)
 	local program_name = arg[0]:match("[^/]+$")
-	print(tr("SearchTermNotProvided", program_name, subcommand))
+	io.stderr:write(tr("SearchTermNotProvided", program_name, subcommand))
 	os.exit(3)
 end
 
@@ -189,7 +189,7 @@ program, tr = config {
 			SearchTermNotProvided = "Você deve fornecer um termo inicial de busca:\n\n\t%s %s “termo de busca”\n",
 			InfoHeading = "Pacote %s",
 			Unsupported = "Este programa não funciona em seu sistema.",
-			UnknownSubcommand = "Subcomando “%s” não reconhecido. Opções disponíveis:\n  - %s",
+			UnknownSubcommand = "Subcomando “%s” não reconhecido. Opções disponíveis:\n  - %s\n",
 			Shortcuts = "<Tab>: escolher | <Enter>: confirmar | <Ctrl+D>: detalhes | <Esc>: sair"
 		},
 		en_US = {
@@ -197,14 +197,14 @@ program, tr = config {
 			SearchTermNotProvided = "You must provide an initial search term:\n\n\t%s %s “search term”\n",
 			InfoHeading = "Package %s",
 			Unsupported = "This program doesn't work on your system.",
-			UnknownSubcommand = "Unknown subcommand “%s”. Available options:\n  - %s",
+			UnknownSubcommand = "Unknown subcommand “%s”. Available options:\n  - %s\n",
 			Shortcuts = "<Tab>: select | <Enter>: confirm | <Ctrl+D>: details | <Esc>: quit"
 		}
 	}
 }
 
 if not program then
-	print(tr"Unsupported")
+	io.stderr:write(tr"Unsupported")
 	os.exit(1)
 end
 
@@ -219,7 +219,7 @@ if not program[subcommand] then
 		return keys
 	end
 
-	print(tr("UnknownSubcommand", subcommand, table.concat(keys(program), "\n  - ")))
+	io.stderr:write(tr("UnknownSubcommand", subcommand, table.concat(keys(program), "\n  - ")))
 	os.exit(2)
 end
 
