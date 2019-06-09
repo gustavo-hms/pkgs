@@ -190,7 +190,7 @@ program, tr = config {
 			InfoHeading = "Pacote %s",
 			Unsupported = "Este programa não funciona em seu sistema.",
 			UnknownSubcommand = "Subcomando “%s” não reconhecido. Opções disponíveis:\n  - %s\n",
-			Shortcuts = "<Tab>: escolher | <Enter>: confirmar | <Ctrl+D>: detalhes | <Esc>: sair"
+			Shortcuts = "Escolher: <Tab> | Confirmar: <Enter> | Detalhes: <Ctrl+D> | Sair: <Esc>"
 		},
 		en_US = {
 			SelectedPackages = "Selected packages: %s.",
@@ -198,7 +198,7 @@ program, tr = config {
 			InfoHeading = "Package %s",
 			Unsupported = "This program doesn't work on your system.",
 			UnknownSubcommand = "Unknown subcommand “%s”. Available options:\n  - %s\n",
-			Shortcuts = "<Tab>: select | <Enter>: confirm | <Ctrl+D>: details | <Esc>: quit"
+			Shortcuts = "Select: <Tab> | Confirm: <Enter> | Details: <Ctrl+D> | Quit: <Esc>"
 		}
 	}
 }
