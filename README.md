@@ -1,11 +1,11 @@
-# pkg
-`pkg` is a very basic wrapper for package managers. It relies on [fzf](https://github.com/junegunn/fzf) to provide a simple and easy interface for various package managers in the Linux world.
+# pkgs
+`pkgs` is a very basic wrapper for package managers. It relies on [fzf](https://github.com/junegunn/fzf) to provide a simple and easy interface for various package managers in the Linux world.
 
 It aims to improve usability in this area of command line interfaces for package management.
 
 # Usage
 
-The program `pkg` has five subcommands:
+The program `pkgs` has five subcommands:
 
 - `install`
 - `remove`
@@ -16,67 +16,67 @@ The program `pkg` has five subcommands:
 The usage is:
 
 ```sh
-pkg <command> "search term"
+pkgs <command> "search term"
 ```
 when `<command>` is any of `install`, `remove` or `details`, and:
 
 ```sh
-pkg <command>
+pkgs <command>
 ```
 when `<command>` is `update` or `no-orphans`.
 
-For the first three subcommands, `pkg` provides a fuzzy finder for packages you want to act upon. You specify an initial term to search, and then you can filter results with the fuzzy finder. For example, suppose you want to install Kdenlive, but don't remember its exact name. You only remember it's a video editing tool from KDE. So you can just type:
+For the first three subcommands, `pkgs` provides a fuzzy finder for packages you want to act upon. You specify an initial term to search, and then you can filter results with the fuzzy finder. For example, suppose you want to install Kdenlive, but don't remember its exact name. You only remember it's a video editing tool from KDE. So you can just type:
 
 ```sh
-sudo pkg install video
+sudo pkgs install video
 ```
 
 Then, thanks to the fuzzy finder, you can start typing to filter the list that appears. For example, if you type `kde`, chances are that you can finally find the `kdenlive` package. Then, it's just a matter of hitting `Enter` and the package will be installed.
 
 If you want to install more then one package, you can hit `Tab` to select each one, then hit `Enter` to confirm.
 
-![Screenshot](https://user.fm/files/v2-e11831b58cfd74792cedcd8c1f02e061/pkg-install.png)
+![Screenshot](https://user.fm/files/v2-e11831b58cfd74792cedcd8c1f02e061/pkgs-install.png)
 
-## pkg install
+## pkgs install
 
-The command `pkg install` installs the packages you select with the fuzzy finder.
+The command `pkgs install` installs the packages you select with the fuzzy finder.
 
 ```sh
-pkg install [initial search term]
+pkgs install [initial search term]
 ```
-## pkg remove
+## pkgs remove
 
-The command `pkg remove` uninstalls the selected packages. It works like `pkg install`:
-
-```sh
-pkg remove [initial search term]
-```
-
-## pkg details
-
-The command `pkg details` is used to retrieve detailed information about packages. It works like `pkg install`:
+The command `pkgs remove` uninstalls the selected packages. It works like `pkgs install`:
 
 ```sh
-pkg details [initial search term]
+pkgs remove [initial search term]
 ```
 
-It uses `fzf` to filter the results like `pkg install`.
+## pkgs details
 
-
-## pkg update
-
-The command `pkg update` updates all installed packages that have new versions in the repository. Like `pkg remove_unnused`, no interactive step nor search term are needed.
+The command `pkgs details` is used to retrieve detailed information about packages. It works like `pkgs install`:
 
 ```sh
-pkg update
+pkgs details [initial search term]
 ```
 
-## pkg no-orphans
+It uses `fzf` to filter the results like `pkgs install`.
 
-The command `pkg no-orphans` uninstalls packages that were installed automatically as dependencies of other packages but are not needed anymore (normally because the original packages that trigger the installation were removed). It doesn't need an interactive step or a search term.
+
+## pkgs update
+
+The command `pkgs update` updates all installed packages that have new versions in the repository. Like `pkgs remove_unnused`, no interactive step nor search term are needed.
 
 ```sh
-pkg no-orphans
+pkgs update
+```
+
+## pkgs no-orphans
+
+The command `pkgs no-orphans` uninstalls packages that were installed automatically as dependencies of other packages but are not needed anymore (normally because the original packages that trigger the installation were removed). It doesn't need an interactive step or a search term.
+
+```sh
+pkgs no-orphans
 ```
 
 # What distros are supported?
@@ -86,17 +86,17 @@ Currently, the supported distributions are:
 - Archlinux-based distros;
 - Debian-based distros.
 
-But it's very easy to add support for other distros, even if you don't know [lua](https://www.lua.org/) (the language used to write the program). Take a look at the `config` section of the `pkg` script.  You will also find a section for translations there if you want to help.
+But it's very easy to add support for other distros, even if you don't know [lua](https://www.lua.org/) (the language used to write the program). Take a look at the `config` section of the `pkgs` script.  You will also find a section for translations there if you want to help.
 
 # Installation
 
-By now, there isn't an installation script. But you can simply take the `pkg` file in this repository and place it in your `PATH`. You must have both [lua](https://www.lua.org/) and [fzf](https://github.com/junegunn/fzf) installed in your system.
+By now, there isn't an installation script. But you can simply take the `pkgs` file in this repository and place it in your `PATH`. You must have both [lua](https://www.lua.org/) and [fzf](https://github.com/junegunn/fzf) installed in your system.
 
-There's also an autocompletion script for the fish shell. If you want to use it, just place the `pkg.fish` file inside the `~/.config/fish/completions` directory. Since I don't use other shells (why do you? =D), I didn't make autocompletion scripts for them. But contributions are welcome.
+There's also an autocompletion script for the fish shell. If you want to use it, just place the `pkgs.fish` file inside the `~/.config/fish/completions` directory. Since I don't use other shells (why do you? =D), I didn't make autocompletion scripts for them. But contributions are welcome.
 
 # Why?
 
-There are two problems with current package managers I want to address: the first one is that each package manager has a unique interface, different from the others and, since I frequently manage computers with different distributions, it's hard to memorise each one; second, all of them have at least some annoying usability problems. Hopefully, `pkg` can help solving some of these problems.
+There are two problems with current package managers I want to address: the first one is that each package manager has a unique interface, different from the others and, since I frequently manage computers with different distributions, it's hard to memorise each one; second, all of them have at least some annoying usability problems. Hopefully, `pkgs` can help solving some of these problems.
 
 But, “what kind of usability problems you see in current package managers?” you may ask. Well, it depends on the program. Let's see:
 
