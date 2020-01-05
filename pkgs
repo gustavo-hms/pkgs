@@ -48,8 +48,9 @@ function search_with(search_command, info_command)
 				--header='%s'
 			]], info_command, tr"Shortcuts" )
 
+		search_command = string.format(search_command, package_name)
 		local full_command =
-			table.concat({ search_command, package_name, "|", fzf }, " ")
+			table.concat({ search_command, "|", fzf }, " ")
 		local result = execute_and_read(full_command)
 
 		if not result or #result == 0 then
@@ -90,7 +91,7 @@ function programs(data)
 			local packages = search(name)
 			if not packages then return end
 
-			execute(commands.install, unpack(packages))
+			execute(string.format(commands.install, table.concat(packages)))
 		end,
 
 		["details"] = function(name)
@@ -119,7 +120,7 @@ function programs(data)
 			local packages = search_installed(name)
 			if not packages then return end
 
-			execute(commands.remove, unpack(packages))
+			execute(string.format(commands.remove, table.concat(packages)))
 		end,
 
 		["no-orphans"] = function()
@@ -163,35 +164,35 @@ program, tr = config {
 		-- Use long-named flags whenever possible to improve readability
 		eopkg = {
 			-- Search for packages not installed in your system
-			search = "eopkg search",
+			search = "eopkg search %s",
 			-- Search for packages already installed in your system
-			search_installed = "eopkg search --installdb",
+			search_installed = "eopkg search --installdb %s",
 			-- Get detailed information about packages
 			details = "eopkg info",
 			-- Install a package
-			install = "eopkg install",
+			install = "eopkg install %s",
 			-- Remove a package
-			remove = "eopkg remove",
+			remove = "eopkg remove %s",
 			-- Remove orphans
 			no_orphans = "eopkg remove-orphans",
 			-- Search for updates in the installed packages and install them
 			update = "eopkg upgrade"
 		},
 		apt = {
-			search = "apt-cache search",
+			search = "apt-cache search %s",
 			search_installed = "dpkg --show --showformat='${Package} ${binary:Sumary}\\n' | grep",
 			details = "apt-cache showpkg",
-			install = "apt-get install",
-			remove = "apt-get remove",
+			install = "apt-get install %s",
+			remove = "apt-get remove %s",
 			no_orphans = "apt-get autoremove",
 			update = "apt-get update; apt-get upgrade"
 		},
 		pacman = {
-			search = "pacman -Ss",
-			search_installed = "pacman -Qs",
+			search = "pacman -Ss %s | paste - - -d' ' | cut -d ' ' -f 1,6-",
+			search_installed = "pacman -Qs %s",
 			details = "pacman -Si",
-			install = "pacman -S",
-			remove = "pacman -Rs",
+			install = "pacman -S %s",
+			remove = "pacman -Rs %s",
 			no_orphans = {"pacman -Qtdq", "pacman -Rns"}, -- Pipe the first in the second
 			update = "pacman -Suy"
 		}
