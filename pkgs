@@ -195,7 +195,7 @@ package_manager, tr = config {
 			update = "apt-get update; apt-get upgrade"
 		},
 		program "pacaur" {
-			search = "pacaur -Ss %s | paste - - -d' ' | cut -d ' ' -f 1,6-",
+			search = "pacaur -Ss %s | paste - - -d'|' | sed -e 's/^\\([^ ]\\+\\).*|\\(.*\\)/\\1 \\2/'",
 			search_installed = "pacaur -Qs %s",
 			details = "pacaur -Si",
 			install = "pacaur -S %s",
@@ -204,7 +204,7 @@ package_manager, tr = config {
 			update = "pacaur -Suy"
 		},
 		program "pacman" {
-			search = "pacman -Ss %s | paste - - -d' ' | cut -d ' ' -f 1,6-",
+			search = "pacman -Ss %s | paste - - -d'|' | sed -e 's/^\\([^ ]\\+\\).*|\\(.*\\)/\\1 \\2/'",
 			search_installed = "pacman -Qs %s",
 			details = "pacman -Si",
 			install = "pacman -S %s",
