@@ -1,2 +1,5 @@
-complete -c pkgs -a 'details install remove no-orphans update'
-
+complete -x -c pkgs -a 'details' --description 'Show details about a package'
+complete -x -c pkgs -a 'install' --description 'Install the chosen packages'
+complete -x -c pkgs -a 'remove' --description 'Remove the chosen packages'
+complete -f -c pkgs -a 'update' --description 'Update the installed packages'
+complete -f -c pkgs -a 'no-orphans' --description 'Remove orphan packages'
