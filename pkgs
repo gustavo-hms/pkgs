@@ -22,11 +22,11 @@ function execute_and_read(command)
 end
 
 function detect_system(config_data)
-	for program in pairs(config_data) do
-		local exists = os.execute(string.format("command -v %s > /dev/null", program))
+	for _, program in ipairs(config_data) do
+		local exists = os.execute(string.format("command -v %s > /dev/null", program.name))
 
 		if exists then
-			return config_data[program]
+			return program
 		end
 	end
 
@@ -73,6 +73,13 @@ function quit_with_search_term_not_provided(subcommand)
 	local program_name = arg[0]:match("[^/]+$")
 	io.stderr:write(tr("SearchTermNotProvided", program_name, subcommand))
 	os.exit(errors.usage)
+end
+
+function program(name)
+	return function(data)
+		data.name = name
+		return data
+	end
 end
 
 function programs(data)
@@ -159,10 +166,10 @@ function config(data)
 	return data[1], data[2]
 end
 
-program, tr = config {
+package_manager, tr = config {
 	programs {
 		-- Use long-named flags whenever possible to improve readability
-		eopkg = {
+		program "eopkg" {
 			-- Search for packages not installed in your system
 			search = "eopkg search %s",
 			-- Search for packages already installed in your system
@@ -178,7 +185,7 @@ program, tr = config {
 			-- Search for updates in the installed packages and install them
 			update = "eopkg upgrade"
 		},
-		apt = {
+		program "apt" {
 			search = "apt-cache search %s",
 			search_installed = "dpkg --show --showformat='${Package} ${binary:Sumary}\\n' | grep",
 			details = "apt-cache showpkg",
@@ -187,7 +194,16 @@ program, tr = config {
 			no_orphans = "apt-get autoremove",
 			update = "apt-get update; apt-get upgrade"
 		},
-		pacman = {
+		program "pacaur" {
+			search = "pacaur -Ss %s | paste - - -d' ' | cut -d ' ' -f 1,6-",
+			search_installed = "pacaur -Qs %s",
+			details = "pacaur -Si",
+			install = "pacaur -S %s",
+			remove = "pacaur -Rs %s",
+			no_orphans = {"pacaur -Qtdq", "pacaur -Rns"}, -- Pipe the first in the second
+			update = "pacaur -Suy"
+		},
+		program "pacman" {
 			search = "pacman -Ss %s | paste - - -d' ' | cut -d ' ' -f 1,6-",
 			search_installed = "pacman -Qs %s",
 			details = "pacman -Si",
@@ -218,14 +234,14 @@ program, tr = config {
 	}
 }
 
-if not program then
+if not package_manager then
 	io.stderr:write(tr"Unsupported")
 	os.exit(errors.unsupported_system)
 end
 
 local subcommand = arg[1]
 
-if not program[subcommand] then
+if not package_manager[subcommand] then
 	local keys = function(t)
 		local keys = {}
 		for k in pairs(t) do
@@ -234,8 +250,8 @@ if not program[subcommand] then
 		return keys
 	end
 
-	io.stderr:write(tr("UnknownSubcommand", subcommand, table.concat(keys(program), "\n  - ")))
+	io.stderr:write(tr("UnknownSubcommand", subcommand, table.concat(keys(package_manager), "\n  - ")))
 	os.exit(errors.usage)
 end
 
-program[subcommand](arg[2])
+package_manager[subcommand](arg[2])
