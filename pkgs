@@ -98,7 +98,7 @@ function programs(data)
 			local packages = search(name)
 			if not packages then return end
 
-			execute(string.format(commands.install, table.concat(packages)))
+			execute(string.format(commands.install, table.concat(packages, " ")))
 		end,
 
 		["details"] = function(name)
@@ -127,7 +127,7 @@ function programs(data)
 			local packages = search_installed(name)
 			if not packages then return end
 
-			execute(string.format(commands.remove, table.concat(packages)))
+			execute(string.format(commands.remove, table.concat(packages, " ")))
 		end,
 
 		["no-orphans"] = function()
