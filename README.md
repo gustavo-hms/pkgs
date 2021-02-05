@@ -79,7 +79,7 @@ The command `pkgs no-orphans` uninstalls packages that were installed automatica
 pkgs no-orphans
 ```
 
-# What distros are supported?
+# Which distros are supported?
 
 Currently, the supported distributions are:
 - Solus;
