@@ -186,11 +186,11 @@ package_manager, tr = config {
 			update = "eopkg upgrade"
 		},
 		program "apt" {
-			search = "apt-cache search %s",
-			search_installed = "dpkg --show --showformat='${Package} ${binary:Sumary}\\n' | grep",
-			details = "apt-cache showpkg",
-			install = "apt-get install %s",
-			remove = "apt-get remove %s",
+			search = "apt search %s",
+			search_installed = "apt list --installed *%s* | sed -r 's/^([^/]+).*/\\1/'",
+			details = "apt-cache show",
+			install = "apt install %s",
+			remove = "apt remove %s",
 			no_orphans = "apt-get autoremove",
 			update = "apt-get update; apt-get upgrade"
 		},
