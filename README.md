@@ -84,7 +84,8 @@ pkgs no-orphans
 Currently, the supported distributions are:
 - Solus;
 - Archlinux-based distros;
-- Debian-based distros.
+- Debian-based distros;
+- Fedora.
 
 But it's very easy to add support for other distros, even if you don't know [lua](https://www.lua.org/) (the language used to write the program). Take a look at the `config` section of the `pkgs` script.  You will also find a section for translations there if you want to help.
 
