@@ -211,6 +211,14 @@ package_manager, tr = config {
 			remove = "pacman -Rs %s",
 			no_orphans = {"pacman -Qtdq", "pacman -Rns"}, -- Pipe the first in the second
 			update = "pacman -Suy"
+		},
+		program "zypper" {
+    		search = [[zypper --quiet search %s | sed -e '1,3d' -e 's/[^|]\+ | \(.\+\)/\1/']],
+    		search_installed = [[zypper --quiet search -i %s | sed -e '1,3d' -e 's/[^|]\+ | \(.\+\)/\1/']],
+    		details = "zypper info",
+    		install = "zypper install %s",
+			remove = "zypper remove %s",
+			update = "zypper refresh; zypper update"
 		}
 	},
 
