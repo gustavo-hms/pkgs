@@ -219,6 +219,15 @@ package_manager, tr = config {
     		install = "zypper install %s",
 			remove = "zypper remove %s",
 			update = "zypper refresh; zypper update"
+		},
+		program "dnf" {
+			search = "dnf search %s 2>/dev/null | grep --invert-match ==========",
+			search_installed = "dnf list installed *%s*",
+			details = "dnf info",
+			install = "dnf install %s",
+			remove = "dnf remove %s",
+			no_orphans = "dnf autoremove",
+			update = "dnf upgrade"
 		}
 	},
 
