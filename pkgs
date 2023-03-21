@@ -98,7 +98,7 @@ function programs(data)
 			local packages = search(name)
 			if not packages then return end
 
-			execute(string.format(commands.install, table.concat(packages, " ")))
+			execute("sudo " .. string.format(commands.install, table.concat(packages, " ")))
 		end,
 
 		["details"] = function(name)
@@ -127,7 +127,7 @@ function programs(data)
 			local packages = search_installed(name)
 			if not packages then return end
 
-			execute(string.format(commands.remove, table.concat(packages, " ")))
+			execute("sudo " .. string.format(commands.remove, table.concat(packages, " ")))
 		end,
 
 		["no-orphans"] = function()
@@ -138,12 +138,12 @@ function programs(data)
 					execute(commands.no_orphans[2], result)
 				end
 			else
-				execute(commands.no_orphans)
+				execute("sudo " .. commands.no_orphans)
 			end
 		end,
 
 		["update"] = function()
-			execute(commands.update)
+			execute("sudo " .. commands.update)
 		end
 	}
 end
@@ -217,7 +217,7 @@ package_manager, tr = config {
     		search_installed = [[zypper --quiet search -i %s | sed -e '1,3d' -e 's/[^|]\+ | \(.\+\)/\1/']],
     		details = "zypper info",
     		install = "zypper install %s",
-			remove = "zypper remove %s",
+			remove = "zypper remove --clean-deps %s",
 			update = "zypper refresh; zypper update"
 		},
 		program "dnf" {
